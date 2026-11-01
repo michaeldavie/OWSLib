@@ -22,7 +22,7 @@ from math import sqrt
 from owslib.etree import etree
 from owslib.util import (openURL, ServiceException, testXMLValue,
                          extract_xml_list, xmltag_split, OrderedDict, nspath,
-                         nspath_eval, bind_url, Authentication, str2bool)
+                         nspath_eval, bind_url, Authentication, str2bool, parse_dimension_extent)
 from owslib.fgdc import Metadata
 from owslib.iso import MD_Metadata
 from owslib.iso3 import MD_Metadata as MD_Metadata3  # ISO 19115 Part 3 XML
@@ -644,10 +644,11 @@ class ContentMetadata(AbstractContentMetadata):
             for k, v in list(dim.attrib.items()):
                 if k != 'name':
                     dim_data[k] = v
-            # single values and ranges are not differentiated here
+            # single values and ranges are not differentiated here; see 'extent'
             dim_data['values'] = None
             if dim.text:
                 dim_data['values'] = dim.text.strip().split(',') if dim.text.strip() else None
+            dim_data['extent'] = parse_dimension_extent(dim.text)
             self.dimensions[dim_name] = dim_data
 
         # MetadataURLs

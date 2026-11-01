@@ -15,6 +15,7 @@ from unittest import mock
 import pytest
 from owslib.etree import etree
 from owslib.util import clean_ows_url, build_get_url, strip_bom, extract_time, ResponseWrapper, getXMLTree, str2bool
+from owslib.util import DimensionInterval, parse_dimension_extent
 
 
 def test_strip_bom():
@@ -144,3 +145,11 @@ def test_str2bool():
     assert not str2bool('0')
     assert int(str2bool('true')) == 1
     assert int(str2bool('false')) == 0
+
+
+def test_parse_dimension_extent():
+    assert parse_dimension_extent(None) is None
+    assert parse_dimension_extent(' ') is None
+    assert parse_dimension_extent('2020-01-01/2020-12-31') == [DimensionInterval('2020-01-01', '2020-12-31')]
+    assert parse_dimension_extent('2020-01-01,2021-01-01/2021-12-31/P1D') == \
+        ['2020-01-01', DimensionInterval('2021-01-01', '2021-12-31', 'P1D')]

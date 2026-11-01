@@ -76,6 +76,12 @@ Test single item accessor
     >>> wms['elevation'].parent is not None
     True
 
+    >>> wms['coast1m'].dimensions['time']['extent']
+    [DimensionInterval(min='1995-01-01', max='2013-12-31', resolution='PT5M')]
+
+    >>> wms['coast1m'].dimensions['elevation']['extent']
+    ['500', '490', '480']
+
 Expect a KeyError for invalid names
 
     >>> wms['utterly bogus'].title

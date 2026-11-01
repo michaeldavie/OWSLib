@@ -8,7 +8,7 @@
 # =============================================================================
 
 import codecs
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 import copy
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
@@ -828,6 +828,18 @@ def datetime_from_ansi(ansi):
     datumOrigin = datetime(1600, 12, 31, 0, 0, 0)
 
     return datumOrigin + timedelta(ansi)
+
+
+DimensionInterval = namedtuple('DimensionInterval', ['min', 'max', 'resolution'], defaults=[None])
+
+
+def parse_dimension_extent(text):
+    """Split a WMS dimension extent into single values and min/max/resolution
+    DimensionIntervals, e.g. "500,490,480" or "1995-01-01/2013-12-31/PT5M"."""
+    if not text or not text.strip():
+        return None
+    items = [item.strip() for item in text.split(',') if item.strip()]
+    return [DimensionInterval(*item.split('/')) if item.count('/') in (1, 2) else item for item in items]
 
 
 def is_number(s):
